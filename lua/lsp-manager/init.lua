@@ -10,7 +10,7 @@ M.load = function()
 		local data = require("lsps/" .. file:gsub("%.lua$", ""))
 		M.servers[data[1]] = {}
 		data.enabled = type(data.enabled) == "nil" and true or data.enabled
-		data.filename = M.opts.path .. file
+		data.filename = M.opts.path .. "/" .. file
 
 		if data.enabled then
 			M.servers[data[1]] = data
@@ -126,6 +126,7 @@ M.telescope_toggle = function()
 
 				local p = from_entry.path(entry, true, false)
 				if p == nil or p == "" then
+          -- vim.notify
 					return
 				end
 

@@ -227,11 +227,15 @@ M.setup_servers = function()
 				end
 			  goto continue
 			end
+
       local nice_coq, cmp =  pcall(require,"cmp_nvim_lsp")
       if cmp then
         opts = cmp.default_capabilities()
       end
+
 			-- Perform LSP setup
+      vim.lsp.config[server] = opts
+
 			local success, msg = pcall(lspconfig[server].setup, opts)
 
 			if not success then

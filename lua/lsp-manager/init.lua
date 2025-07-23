@@ -236,13 +236,20 @@ M.setup_servers = function()
         vim.notify("Cannot load" .. M.opts.auto_complete_plugin .. "please install it", vim.log.levels.ERROR)
       else
         if M.opts.auto_complete_plugin == "cmp_nvim_lsp" then
-          opts= cmp.default_capabilities()
+          opts = vim.tbl_deep_extend("keep", opts, cmp.default_capabilities())
         end
       end
 
       -- Perform LSP setup
-      local success, msg = pcall(lspconfig[server].setup, opts)
-      vim.lsp.config[server] = opts
+      local success_config, msg_config = pcall(vim.lsp.config, server, opts)
+
+      if not success_config then
+        vim.schedule(function()
+          vim.notify(string.format("Cannot setup %s because: %s", server, msg_config))
+        end)
+      end
+
+      local success, msg = pcall(vim.lsp.enable, server, opts)
 
       if not success then
         vim.schedule(function()
